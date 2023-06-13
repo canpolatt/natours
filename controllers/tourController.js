@@ -3,14 +3,22 @@ const Tour = require('../models/tourModel');
 // ROUTE HANDLERS
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    // BUILD QUERY
+    const { page, sort, limit, fields, ...queryObj } = req.query;
+
+    const query = Tour.find(queryObj);
+
+    // EXECUTE QUERY
+    const tours = await query;
+
+    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       results: tours.length,
       data: { tours },
     });
   } catch (error) {
-    res.status(400).json({
+    res.status(404).json({
       status: 'fail',
       message: error,
     });
